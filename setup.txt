@@ -1,0 +1,37 @@
+When you update the lambda_handler thing you have to run:
+sam build
+sam deploy --guided
+
+equivalent for bash:
+sam.cmd build
+sam.cmd deploy --guided
+
+To get setup (run 'aws configure'):
+sam init
+
+{'ResponseMetadata': {
+    'RequestId': '49TKPQ4JXWEEZ0NT', 'HostId': 'aXWIjG0WT+tMr1AJNowagziV5rZ0F658vELVnh75mzAst1VzbV7ASs82ONI8/RoEtslDsrMbLc8=', 'HTTPStatusCode': 200, 'HTTPHeaders': {'x-amz-id-2': 'aXWIjG0WT+tMr1AJNowagziV5rZ0F658vELVnh75mzAst1VzbV7ASs82ONI8/RoEtslDsrMbLc8=', 'x-amz-request-id': '49TKPQ4JXWEEZ0NT', 'date': 'Sun, 05 Mar 2023 22:37:55 GMT', 'last-modified': 'Fri, 20 Jan 2023 02:14:24 GMT', 'etag': '"c24934af72cff7a53aa7af31beb1dec0"', 'x-amz-server-side-encryption': 'AES256', 'accept-ranges': 'bytes', 'content-type': 'binary/octet-stream', 'server': 'AmazonS3', 'content-length': '8574'}, 'RetryAttempts': 0}
+, 'AcceptRanges': 'bytes', 'LastModified': datetime.datetime(2023, 1, 20, 2, 14, 24, tzinfo=tzutc()), 'ContentLength': 8574, 'ETag': '"c24934af72cff7a53aa7af31beb1dec0"', 'ContentType': 'binary/octet-stream', 'ServerSideEncryption': 'AES256', 'Metadata': {}, 'Body': <botocore.response.StreamingBody object at 0x7f9b48c1a5b0>}
+
+
+Notes for Task One:
+
+Name of the function should be lambdaftp
+
+The function essentially provides the user with a link they can use to download a specified file.
+
+Parameters: 'bucket' and 'filename'
+
+To create on AWS Lambda:
+
+1. Create a new function
+    - Runtime: Python 3.9
+    - Change the default execution role, select 'Create a new role from AWS policy templates', and search for the 'Amazon S3 Object read-only permissions' templates
+    - Give it a role name (can be anything)
+    - Create the function
+    - This gets triggered by the API gateway so that needs to be setup (figure out what the request body will look like)
+        - Add an API gateway trigger, choose create new API, and select HTTP API for the API type, Security is 'Open'
+        - Can't figure out how to get api gateway setup properly
+2. 
+
+Notes for Task Two:

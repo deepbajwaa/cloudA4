@@ -1,0 +1,50 @@
+import json
+import boto3
+
+# Name: Simrandeep Bajwa
+# Student ID: 1040216
+# Email: sbajwa05@uoguelph.ca
+# Assignment: #4
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # TODO implement
+    # print(event)
+    # bucket = event['params']['querystring']['bucket']
+    # filename = event['params']['querystring']['filename']
+    
+    try:
+        bucket = event['bucket']
+        filename = event['filename']
+    except Exception as e:
+        return {
+            'statusCode': 200,
+            'body': 'Missing \'bucket\' and \'filename\' parameters from request!'
+        }
+        
+    # try:
+    #     response = s3.get_object(Bucket=bucket, Key=filename)
+    #     # content = response['Body']
+    # except Exception as e:
+    #     return {
+    #         'statusCode': 200,
+    #         'body': e
+    #     }    
+    # print(content)
+    # file_json = json.loads(content.read())
+    
+    download_url = s3.generate_presigned_url(
+        'get_object',
+        Params = {'Bucket': bucket, 'Key': filename},
+        ExpiresIn = 3600
+    )
+    
+    # print("CONTENT TYPE: " + response['ContentType'])
+    # return response['ContentType']
+    return download_url
+    
+    # return {
+    #     'statusCode': 200,
+    #     'body': 'test'
+    # }
