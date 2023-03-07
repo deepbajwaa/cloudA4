@@ -32,6 +32,15 @@ To create on AWS Lambda:
     - This gets triggered by the API gateway so that needs to be setup (figure out what the request body will look like)
         - Add an API gateway trigger, choose create new API, and select HTTP API for the API type, Security is 'Open'
         - Can't figure out how to get api gateway setup properly
-2. 
 
 Notes for Task Two:
+
+1. Create a new lambda function that acts as an automatic file upload service.
+2. Create an S3 trigger for a specific S3 bucket, so when you upload a file to this bucket, a trigger will be set off for your lambda function.
+Make sure the event type is set to 's3:ObjectCreated' so it gets triggered on any object upload.
+3. You need to go to AWS IAM and create a new role. Select 'AWS Service' as the trusted entity type. Select Lambda as the use case. For add permissions
+select the 'AmazonS3FullAccess' policy. Add a role name and create the role. Then go back to your lambda function and select that new role with the s3
+permissions.
+
+ So you essentially create some sort of text file that contains a list of names
+of where the uploaded file needs to be sent. 
