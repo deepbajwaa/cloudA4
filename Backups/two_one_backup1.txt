@@ -6,24 +6,11 @@ import boto3
 # Assignment: #4
 
 s3 = boto3.client('s3')
-s3_res = boto3.resource('s3')
-
-# This function checks if a file exists on s3
-def check_if_file_exists_s3(bucket_name, filename):
-    # Check if the given file exists within the specifed bucket
-    try:    
-        for object in s3_res.Bucket(bucket_name).objects.all():
-            if (filename == object.key.strip("/")):
-                return True
-    except Exception as e:
-        return False
-
-    return False
 
 def lambda_handler(event, context):
     # bucket = event['params']['querystring']['bucket']
     # filename = event['params']['querystring']['filename']
-
+    print(event)
     try:
         # bucket = event['bucket']
         # filename = event['filename']
@@ -31,11 +18,13 @@ def lambda_handler(event, context):
         filename = event['queryStringParameters']['filename']
     except Exception as e:
         print(e)
+        print('Missing \'bucket\' and \'filename\' parameters from request!')
         return 'Missing \'bucket\' and \'filename\' parameters from request!'
-    
-    # Check if the file exists
-    if not check_if_file_exists_s3(bucket, filename):
-        return "The file: \'{}\' does not exist within the bucket: \'{}\'".format(filename, bucket)
+        
+        # return {
+        #     'statusCode': 200,
+        #     'message': 'Missing \'bucket\' and \'filename\' parameters from request!'
+        # }
     
     # Get the link to download the file specified by the user
     try:
@@ -46,8 +35,19 @@ def lambda_handler(event, context):
         )
     except Exception as e:
         print(e)
-        return 'Could not retreive the bucket: \'{}\' and file: \'{}\''.format(bucket, filename)
+        print('Could not retreive the bucket: {} and file: {}'.format(bucket, filename))
+        return 'Could not retreive the bucket: {} and file: {}'.format(bucket, filename)
+    
+        # return {
+        #     'statusCode': 200,
+        #     'message': 'Could not retreive the bcuket: {} and file: {}'.format(bucket, filename)
+        # }
     
     # Return a response with the download link
     print("download_url: ", download_url)
     return download_url
+
+    # return {
+    #         'statusCode': 200,
+    #         'download_url': download_url
+    #     }

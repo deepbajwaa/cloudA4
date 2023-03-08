@@ -7,7 +7,6 @@ from datetime import datetime
 # Email: sbajwa05@uoguelph.ca
 # Assignment: #4
 
-
 s3 = boto3.client('s3')
 s3_res = boto3.resource('s3')
 
@@ -52,4 +51,4 @@ def lambda_handler(event, context):
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
-              
+    
