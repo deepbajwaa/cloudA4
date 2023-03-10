@@ -9,10 +9,6 @@ import json
 s3 = boto3.client('s3')
 s3_res = boto3.resource('s3')
 
-# This function checks if a bucket exists within the user's s3 space
-def check_if_bucket_exists(bucket_name):
-    return (s3_res.Bucket(bucket_name) in s3_res.buckets.all())
-
 # This function checks if a file exists on s3
 def check_if_file_exists_s3(bucket_name, filename):
     # Check if the given file exists within the specifed bucket
@@ -26,35 +22,21 @@ def check_if_file_exists_s3(bucket_name, filename):
     return False
 
 def lambda_handler(event, context):
+    # bucket = event['params']['querystring']['bucket']
+    # filename = event['params']['querystring']['filename']
+
     try:
+        # bucket = event['bucket']
+        # filename = event['filename']
         bucket = event['queryStringParameters']['bucket']
         filename = event['queryStringParameters']['filename']
     except Exception as e:
         print(e)
-        error_msg = 'Missing \'bucket\' and \'filename\' parameters from request!'
-        print(error_msg)
-        return {
-            'statusCode': 500,
-            'body': json.dumps(error_msg)
-        }
+        return 'Missing \'bucket\' and \'filename\' parameters from request!'
     
-    # Check if the bucket exists
-    if not check_if_bucket_exists(bucket):
-        return_msg = "The bucket: \'{}\' does not exist within your s3 space!".format(bucket)
-        print(return_msg)
-        return {
-            'statusCode': 200,
-            'body': json.dumps(return_msg)
-        }
-
     # Check if the file exists
     if not check_if_file_exists_s3(bucket, filename):
-        return_msg = "The file: \'{}\' does not exist within the bucket: \'{}\'".format(filename, bucket)
-        print(return_msg)
-        return {
-            'statusCode': 200,
-            'body': json.dumps(return_msg)
-        }
+        return "The file: \'{}\' does not exist within the bucket: \'{}\'".format(filename, bucket)
     
     # Get the link to download the file specified by the user
     try:
@@ -65,16 +47,16 @@ def lambda_handler(event, context):
         )
     except Exception as e:
         print(e)
-        error_msg = 'Could not retreive the bucket: \'{}\' and file: \'{}\''.format(bucket, filename)
-        print(error_msg)
-        return {
-            'statusCode': 500,
-            'body': json.dumps(error_msg)
-        }
+        return 'Could not retreive the bucket: \'{}\' and file: \'{}\''.format(bucket, filename)
     
     # Return a response with the download link
     print("download_url: ", download_url)
+    # return_block = {}
+    # return_block['statusCode'] = 200
+    # return_block['download_url'] = download_url
     return {
         'statusCode': 200,
         'body': json.dumps(download_url)
     }
+    # return JSON.stringify(return_block)
+    # return download_url
