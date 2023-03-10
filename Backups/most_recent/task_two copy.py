@@ -11,11 +11,11 @@ import json
 s3 = boto3.client('s3')
 s3_res = boto3.resource('s3')
 
-def create_logfile(users, filename):
+def create_logfile(users):
     log_filename = datetime.now().strftime("%Y-%m-%d;%H;%M;%S") + ".txt"
 
     # Create the log
-    log = 'Copied the file: \'{}\' to the following users: \n'.format(filename)
+    log = 'Copied the file: \'{}\' to the following users: \n'
 
     for user in users:
         bucket_name = "cis4010-a4-task-two-sbajwa05-" + user.lower()
@@ -56,6 +56,8 @@ def lambda_handler(event, context):
 
         for name in file:
             bucket_name = "cis4010-a4-task-two-sbajwa05-" + name.lower()
+            print("The file: \'{}\' is being sent to the user: \'{}\' (bucket name: \'{}\')".format(key, name, bucket_name))
+            print("bucket name: {}".format(bucket))
 
             if s3_res.Bucket(bucket_name) in s3_res.buckets.all():
                 s3.copy_object(Bucket=bucket_name, Key=key, CopySource={'Bucket': bucket,'Key': key})
@@ -64,7 +66,7 @@ def lambda_handler(event, context):
                 s3.copy_object(Bucket=bucket_name, Key=key, CopySource={'Bucket': bucket,'Key': key})
             users.append(name)
 
-        create_logfile(users, key)
+        create_logfile(users)
         return {
             'statusCode': 200,
             'body': json.dumps(response['ContentType'])
